@@ -1,14 +1,23 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-export default function EmployeeForm({ onSubmit }) {
+export default function EmployeeForm({ onAdded }) {
   const [name, setName] = useState("");
   const [maxHours, setMaxHours] = useState(40);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ name, max_hours: maxHours });
-    setName("");
-    setMaxHours(40);
+    try {
+      await axios.post("http://127.0.0.1:5000/api/employees", {
+        name,
+        max_hours: maxHours,
+      });
+      onAdded();
+      setName("");
+      setMaxHours(40);
+    } catch (err) {
+      console.error("Error adding employee:", err);
+    }
   };
 
   return (

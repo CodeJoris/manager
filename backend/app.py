@@ -19,6 +19,10 @@ def handle_employees():
         employees = [dict(id=row[0], name=row[1], max_hours=row[2]) for row in cur.fetchall()]
         return jsonify(employees)
 
+@app.route("/")
+def home():
+    return "API is running."
+
 if __name__ == "__main__":
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
