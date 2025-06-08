@@ -5,19 +5,33 @@ import sqlite3
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/api/employees", methods=["GET", "POST"])
+@app.route("/api/employees", methods=["GET", "POST", "DELETE"])
 def handle_employees():
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
+
     if request.method == "POST":
         data = request.json
-        cur.execute("INSERT INTO employees (name, max_hours) VALUES (?, ?)", (data["name"], data["max_hours"]))
+        cur.execute(
+            "INSERT INTO employees (name, max_hours) VALUES (?, ?)",
+            (data["name"], data["max_hours"])
+        )
         conn.commit()
         return jsonify({"status": "ok"})
-    else:
+
+    elif request.method == "GET":
         cur.execute("SELECT id, name, max_hours FROM employees")
-        employees = [dict(id=row[0], name=row[1], max_hours=row[2]) for row in cur.fetchall()]
+        employees = [
+            dict(id=row[0], name=row[1], max_hours=row[2])
+            for row in cur.fetchall()
+        ]
         return jsonify(employees)
+
+    elif request.method == "DELETE":
+        cur.execute("DELETE FROM employees")
+        conn.commit()
+        return jsonify({"status": "all employees deleted"})
+
 
 @app.route("/")
 def home():

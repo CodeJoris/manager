@@ -23,6 +23,18 @@ export default function Dashboard() {
           <li key={emp.id}>{emp.name} – Max {emp.max_hours} hrs/week</li>
         ))}
       </ul>
+      <button
+        onClick = {async () => {
+          try {
+            await axios.delete("http://127.0.0.1:5000/api/employees");
+            fetchEmployees();
+          } catch (error) {
+            console.error("Error deleting employees:", error);
+          }
+        }}
+      >
+        Clear All Employees
+      </button>
     </div>
   );
 }
